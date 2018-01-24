@@ -1,6 +1,8 @@
 # cljnake
 
-A [re-frame](https://github.com/Day8/re-frame) application designed to ... well, that part is up to you.
+[![Build Status](https://travis-ci.org/kirang89/cljnake.svg?branch=master)](https://travis-ci.org/kirang89/cljnake)
+
+The nostalgic snake game brought to you by clojurescript and re-frame.
 
 ## Development Mode
 
