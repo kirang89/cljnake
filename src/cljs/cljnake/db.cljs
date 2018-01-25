@@ -3,7 +3,7 @@
 
 (def board {:width 35 :height 25})
 
-(def snake {:direction [1 0]
+(def snake {:direction :right
             :body      [[1 4] [2 4] [3 4] [4 4]]})
 
 (def default-db

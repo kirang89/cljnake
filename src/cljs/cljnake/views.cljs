@@ -1,6 +1,9 @@
 (ns cljnake.views
-  (:require [re-frame.core :as rf]
-            [cljnake.subs :as subs]))
+  (:require [goog.events :as gevents]
+            [re-frame.core :as rf]
+            [cljnake.events :as events]
+            [cljnake.subs :as subs]
+            [cljnake.utils :as utils]))
 
 (defn board-row [row-idx width snake-pos]
   (into [:tr]
@@ -27,17 +30,28 @@
                            (= @food pos)             [:td.point]
                            :else                     [:td.cell])))))]))))
 
-(defn snake-panel []
-  (let [snake (rf/subscribe [::subs/snake-body])]
-    [:div (str "Snake " @snake)]))
-
 (defn score-panel []
   (let [score (rf/subscribe [::subs/score])]
     [:div.score "Score: " @score]))
+
+(defn start-game-panel []
+  [:div.start-game [:i "Press any key to start"]])
 
 (defn game-panel []
   [:div
    [:h1.heading "cljnake 🐍"]
    [score-panel]
    [board-panel]
-   [snake-panel]])
+   ;; [start-game-panel]
+   ])
+
+;; key press handler
+(defonce key-handler
+  (gevents/listen js/window "keydown"
+                  (fn [e]
+                    (let [key-pressed      (.-keyCode e)
+                          keys-of-interest (set (keys utils/keycode->event))]
+                      (when (contains? keys-of-interest key-pressed)
+                        (rf/dispatch [::events/key-pressed
+                                      (get utils/keycode->event
+                                           key-pressed)]))))))
