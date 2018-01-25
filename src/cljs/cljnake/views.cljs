@@ -35,15 +35,14 @@
     [:div.score "Score: " @score]))
 
 (defn start-game-panel []
-  [:div.start-game [:i "Press any key to start"]])
+  [:div.start-game [:i "Press Enter key to start"]])
 
 (defn game-panel []
   [:div
    [:h1.heading "cljnake 🐍"]
    [score-panel]
    [board-panel]
-   ;; [start-game-panel]
-   ])
+   [start-game-panel]])
 
 ;; key press handler
 (defonce key-handler

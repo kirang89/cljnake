@@ -14,9 +14,16 @@
    39 :right})
 
 (defn rand-pos [{:keys [width height]} {:keys [body] :as snake}]
+  "Retrieves a random position on the board exclusive of the snake's body."
   (let [board-positions (into #{}
                               (for [x (range width) y (range height)]
                                 [x y]))
         snake-body      (into #{} body)
         available-positions (remove snake-body board-positions)]
     (rand-nth available-positions)))
+
+(defn move-snake [body direction]
+  (let [[offset-x offset-y] (direction->offset direction)
+        add-offset          (fn [[x y]]
+                              [(+ x offset-x) (+ y offset-y)])]
+    (vec (map add-offset body))))
