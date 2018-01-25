@@ -15,8 +15,8 @@
 
 (rf/reg-event-db
  ::change-snake-direction
- (fn [db [_ direction]]
-   (if (utils/direction->offset direction)
+ (fn [{:keys [snake] :as db} [_ direction]]
+   (if (utils/can-move? (:direction snake) direction)
      (assoc-in db [:snake :direction] direction)
      db)))
 

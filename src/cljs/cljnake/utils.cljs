@@ -29,3 +29,13 @@
                              rest
                              vec
                              (conj new-head)))))
+
+(defn can-move? [old-dir new-dir]
+  "Returns false if snake cannot move from old direction to new, true otherwise."
+  (condp = [old-dir new-dir]
+    [:right  :left ] false
+    [:left   :right] false
+    [:up     :down ] false
+    [:down   :up   ] false
+    [old-dir nil   ] false
+    true))
