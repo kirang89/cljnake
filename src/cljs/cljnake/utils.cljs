@@ -1,10 +1,10 @@
 (ns cljnake.utils)
 
 (def direction->offset
-  {:up    [0   1]
-   :down  [0  -1]
-   :left  [-1  0]
-   :right [1   0]})
+  {:up    [ 0  -1]
+   :down  [ 0   1]
+   :left  [-1   0]
+   :right [ 1   0]})
 
 (def keycode->event
   {13 :enter
@@ -22,8 +22,10 @@
         available-positions (remove snake-body board-positions)]
     (rand-nth available-positions)))
 
-(defn move-snake [body direction]
-  (let [[offset-x offset-y] (direction->offset direction)
-        add-offset          (fn [[x y]]
-                              [(+ x offset-x) (+ y offset-y)])]
-    (vec (map add-offset body))))
+(defn move-snake [{:keys [body direction] :as snake}]
+  (let [offset    (direction->offset direction)
+        new-head  (mapv + offset (last body))]
+    (update snake :body #(-> %
+                             rest
+                             vec
+                             (conj new-head)))))

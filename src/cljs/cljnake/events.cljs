@@ -11,13 +11,14 @@
 (rf/reg-fx
  ::start-game
  (fn []
-   (js/setInterval #(rf/dispatch [::next-state]) 150)))
+   (js/setInterval #(rf/dispatch [::tick]) 150)))
 
 (rf/reg-event-db
  ::change-snake-direction
  (fn [db [_ direction]]
-   (prn "move snake " direction)
-   db))
+   (if (utils/direction->offset direction)
+     (assoc-in db [:snake :direction] direction)
+     db)))
 
 (rf/reg-event-fx
  ::key-pressed
@@ -28,8 +29,6 @@
             {:dispatch [::cljnake.events/change-snake-direction key]}))))
 
 (rf/reg-event-db
- ::next-state
+ ::tick
  (fn [db _]
-   (let [{:keys [direction body]} (:snake db)
-         new-snake-pos            (utils/move-snake body direction)]
-     (assoc-in db [:snake :body] new-snake-pos))))
+   (update-in db [:snake] utils/move-snake)))
