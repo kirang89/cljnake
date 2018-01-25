@@ -39,3 +39,7 @@
     [:down   :up   ] false
     [old-dir nil   ] false
     true))
+
+(defn ate? [snake food-pos]
+  "Returns true if snake's head position matches the food position, false otherwise."
+  (= (last (:body snake)) food-pos))

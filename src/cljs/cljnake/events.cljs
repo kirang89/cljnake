@@ -30,5 +30,15 @@
 
 (rf/reg-event-db
  ::tick
- (fn [db _]
-   (update-in db [:snake] utils/move-snake)))
+ (fn [{:keys [snake food] :as db} _]
+   (let [new-snake (utils/move-snake snake)
+         board     (:board db)]
+     (cond-> db
+       (utils/ate? new-snake food)
+       (update :score inc)
+
+       (utils/ate? new-snake food)
+       (assoc :food (utils/rand-pos board new-snake))
+
+       true
+       (assoc :snake new-snake)))))
