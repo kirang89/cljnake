@@ -35,7 +35,9 @@
     [:div.score "Score: " @score]))
 
 (defn start-game-panel []
-  [:div.start-game [:i "Press Enter key to start"]])
+  (if-not @(rf/subscribe [::subs/game-running?])
+    [:div.start-game [:i "Press Enter key to start"]]
+    [:div]))
 
 (defn game-panel []
   [:div
