@@ -33,11 +33,11 @@
 
 (defn score-panel []
   (let [score (rf/subscribe [::subs/score])]
-    [:div "Score: " @score]))
+    [:div.score "Score: " @score]))
 
 (defn game-panel []
   [:div
-   [:h1 "cljnake 🐍"]
+   [:h1.heading "cljnake 🐍"]
    [score-panel]
    [board-panel]
    [snake-panel]])

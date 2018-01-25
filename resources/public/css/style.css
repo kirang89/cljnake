@@ -1,7 +1,7 @@
 * {
     box-sizing: border-box;
     margin: 0 auto;
-    max-width: 750px;
+    max-width: 527px;
 
     -webkit-font-smoothing: subpixel-antialiased;
 }
@@ -21,21 +21,19 @@ body {
     overflow: hidden;
 }
 
-.score {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 20px;
-    font-weight: bold;
-    padding-top: 100px;
+.heading {
     text-align: center;
+    padding-left: 1em;
+    font-size: 50px;
+}
+
+.score {
+    color: rgb(0, 136, 255);
+    font-size: 15px;
+    font-weight: bold;
 }
 
 .stage {
-    bottom: 0;
-    left: 0;
-    margin: auto;
-    position: absolute;
-    right: 0;
-    top: 0;
     z-index: 2;
 }
 
@@ -77,4 +75,8 @@ body {
 
 .play h1 {
     font-size: 100px;
+}
+
+.start-game {
+    text-align: center;
 }
