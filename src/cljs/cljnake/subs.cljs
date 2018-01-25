@@ -1,22 +1,15 @@
 (ns cljnake.subs
   (:require [re-frame.core :as rf]))
 
-(rf/reg-sub
- ::board
- (fn [db]
-   (:board db)))
+(defn subscribe [name & keys]
+  "Creates a subscription to `key` with given `name`"
+  (rf/reg-sub
+   name
+   (fn [db]
+     (get-in db keys))))
 
-(rf/reg-sub
- ::snake-body
- (fn [db]
-   (get-in db [:snake :body])))
-
-(rf/reg-sub
- ::score
- (fn [db]
-   (:score db)))
-
-(rf/reg-sub
- ::food
- (fn [db]
-   (:food db)))
+(subscribe ::board :board)
+(subscribe ::score :score)
+(subscribe ::food :food)
+(subscribe ::game-running? :game-running?)
+(subscribe ::snake-body :snake :body)
