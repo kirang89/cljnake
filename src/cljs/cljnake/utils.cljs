@@ -41,11 +41,13 @@
     true))
 
 (defn ate? [snake food-pos]
-  "Returns true if snake's head position matches the food position, false otherwise."
+  "Returns true if snake's head position matches the
+  food position, false otherwise."
   (= (last (:body snake)) food-pos))
 
 (defn out-of-bound? [{:keys [width height]} [x y]]
-  "Returns true if a position is out of bounds of the board, false otherwise."
+  "Returns true if a position is out of bounds of the board,
+  false otherwise."
   (or (or (< x -1) (> x width))
       (or (< y -1) (> y height))))
 
@@ -55,3 +57,12 @@
         next-head-positions (map #(mapv + (second %1) head)
                                  direction->offset)]
     (some (partial out-of-bound? board) next-head-positions)))
+
+(defn tail-offset [{:keys [direction]}]
+  "Returns the offset for the direction in which a snake
+   tail is expected to grow."
+  (case direction
+    :up    (:down direction->offset)
+    :down  (:up direction->offset)
+    :left  (:right direction->offset)
+    :right (:left direction->offset)))

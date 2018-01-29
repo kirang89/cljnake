@@ -35,24 +35,32 @@
      (assoc-in db [:snake :direction] direction)
      db)))
 
+(rf/reg-event-db
+ ::grow-snake
+ (fn [{:keys [board snake] :as db} _]
+   (-> db
+       (update :score inc)
+       (assoc :food (utils/rand-pos board snake))
+       (as-> db-inst
+           (let [tail        (first {:body snake})
+                 new-tail    (mapv + tail (utils/tail-offset snake))
+                 grown-snake (into [new-tail] (:body snake))]
+             (assoc-in db-inst [:snake :body] grown-snake))))))
+
 (rf/reg-event-fx
  ::tick-handler
  (fn [{{:keys [snake food] :as db} :db} _]
    (let [new-snake (utils/move-snake snake)
-         board     (:board db)
-         new-db    (cond-> db
-                     (utils/ate? new-snake food)
-                     (update :score inc)
+         new-db    (assoc db :snake new-snake)]
+     (cond-> {}
+       true
+       (assoc :db new-db)
 
-                     (utils/ate? new-snake food)
-                     (assoc :food (utils/rand-pos board new-snake))
+       (utils/collided? (:board db) new-snake)
+       (assoc :dispatch [::stop-game])
 
-                     true
-                     (assoc :snake new-snake))]
-     (if (utils/collided? board new-snake)
-       {:db new-db
-        :dispatch [::stop-game]}
-       {:db new-db}))))
+       (utils/ate? new-snake food)
+       (assoc :dispatch [::grow-snake])))))
 
 (rf/reg-event-fx
  ::start-game
