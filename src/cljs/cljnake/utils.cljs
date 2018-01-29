@@ -43,3 +43,15 @@
 (defn ate? [snake food-pos]
   "Returns true if snake's head position matches the food position, false otherwise."
   (= (last (:body snake)) food-pos))
+
+(defn out-of-bound? [{:keys [width height]} [x y]]
+  "Returns true if a position is out of bounds of the board, false otherwise."
+  (or (or (< x -1) (> x width))
+      (or (< y -1) (> y height))))
+
+(defn collided? [board {:keys [body] :as snake}]
+  "Returns true if snake collided with board, false otherwise."
+  (let [head                (last body)
+        next-head-positions (map #(mapv + (second %1) head)
+                                 direction->offset)]
+    (some (partial out-of-bound? board) next-head-positions)))
