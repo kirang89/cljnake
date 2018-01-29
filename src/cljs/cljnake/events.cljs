@@ -36,24 +36,45 @@
      db)))
 
 (rf/reg-event-fx
+ ::tick-handler
+ (fn [{{:keys [snake food] :as db} :db} _]
+   (let [new-snake (utils/move-snake snake)
+         board     (:board db)
+         new-db    (cond-> db
+                     (utils/ate? new-snake food)
+                     (update :score inc)
+
+                     (utils/ate? new-snake food)
+                     (assoc :food (utils/rand-pos board new-snake))
+
+                     true
+                     (assoc :snake new-snake))]
+     (if (utils/collided? board new-snake)
+       {:db new-db
+        :dispatch [::stop-game]}
+       {:db new-db}))))
+
+(rf/reg-event-fx
+ ::start-game
+ (fn [{:keys [db]} _]
+   {:db    (assoc db :game-running? true)
+    ::tick {:action    :start
+            :id        :ticker-1
+            :event     [::tick-handler]
+            :frequency 150}}))
+
+(rf/reg-event-fx
+ ::stop-game
+ (fn [{:keys [db]} _]
+   {:db    (assoc db
+                  :game-running? false
+                  :game-over? true)
+    ::tick {:action :stop
+            :id     :ticker-1}}))
+
+(rf/reg-event-fx
  ::key-pressed
  (fn [{:keys [db]} [_ key]]
-   (merge {:db (assoc db :game-running? true)}
-          (if (and (= key :enter) (not (:game-running? db))) ; Pressing enter after starting game should do nothing
-            {::start-game nil}
-            {:dispatch [::cljnake.events/change-snake-direction key]}))))
-
-(rf/reg-event-db
- ::tick
- (fn [{:keys [snake food] :as db} _]
-   (let [new-snake (utils/move-snake snake)
-         board     (:board db)]
-     (cond-> db
-       (utils/ate? new-snake food)
-       (update :score inc)
-
-       (utils/ate? new-snake food)
-       (assoc :food (utils/rand-pos board new-snake))
-
-       true
-       (assoc :snake new-snake)))))
+   (if (and (= key :enter) (not (:game-running? db))) ; Pressing enter after starting game should do nothing
+     {:dispatch [::start-game]}
+     {:dispatch [::cljnake.events/change-snake-direction key]})))

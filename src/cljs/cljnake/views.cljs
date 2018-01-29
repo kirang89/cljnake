@@ -48,11 +48,13 @@
 
 ;; key press handler
 (defonce key-handler
-  (gevents/listen js/window "keydown"
-                  (fn [e]
-                    (let [key-pressed      (.-keyCode e)
-                          keys-of-interest (set (keys utils/keycode->event))]
-                      (when (contains? keys-of-interest key-pressed)
-                        (rf/dispatch [::events/key-pressed
-                                      (get utils/keycode->event
-                                           key-pressed)]))))))
+  (gevents/listen
+   js/window
+   "keydown"
+   (fn [e]
+     (let [key-pressed      (.-keyCode e)
+           keys-of-interest (set (keys utils/keycode->event))]
+       (when (contains? keys-of-interest key-pressed)
+         (rf/dispatch [::events/key-pressed
+                       (get utils/keycode->event
+                            key-pressed)]))))))
