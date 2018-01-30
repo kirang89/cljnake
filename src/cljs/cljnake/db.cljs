@@ -11,4 +11,6 @@
    :snake         snake
    :food          (utils/rand-pos board snake)
    :score         0
-   :game-running? false})
+   :first-run?    true
+   :game-running? false
+   :game-over?    false})

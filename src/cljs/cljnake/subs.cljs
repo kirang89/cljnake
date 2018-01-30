@@ -12,4 +12,6 @@
 (subscribe ::score :score)
 (subscribe ::food :food)
 (subscribe ::game-running? :game-running?)
+(subscribe ::game-over? :game-over?)
+(subscribe ::first-run? :first-run?)
 (subscribe ::snake-body :snake :body)

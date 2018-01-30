@@ -65,7 +65,9 @@
 (rf/reg-event-fx
  ::start-game
  (fn [{:keys [db]} _]
-   {:db    (assoc db :game-running? true)
+   {:db    (-> db
+               (assoc :game-running? true)
+               (assoc :first-run?    false))
     ::tick {:action    :start
             :id        :ticker-1
             :event     [::tick-handler]

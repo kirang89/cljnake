@@ -35,16 +35,31 @@
     [:div.score "Score: " @score]))
 
 (defn start-game-panel []
-  (if-not @(rf/subscribe [::subs/game-running?])
+  (if @(rf/subscribe [::subs/first-run?])
     [:div.start-game [:i "Press Enter key to start"]]
     [:div]))
+
+(defn game-over-panel []
+  (let [game-over? (rf/subscribe [::subs/game-over?])
+        score      (rf/subscribe [::subs/score])]
+    [:div.game-over
+     {:style {:display (if @game-over? "block" "none")}}
+     [:div.game-over-label "GAME OVER"]
+     [:div.score-label (str "Score: " @score)]
+     [:button.btn.btn-primary
+      {:type "input"
+       :on-click #(do
+                    (rf/dispatch [::events/initialize-db])
+                    (rf/dispatch [::events/start-game]))}
+      "Play Again"]]))
 
 (defn game-panel []
   [:div
    [:h1.heading "cljnake 🐍"]
    [score-panel]
    [board-panel]
-   [start-game-panel]])
+   [start-game-panel]
+   [game-over-panel]])
 
 ;; key press handler
 (defonce key-handler
