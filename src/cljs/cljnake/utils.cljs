@@ -51,12 +51,21 @@
   (or (or (< x -1) (> x width))
       (or (< y -1) (> y height))))
 
+(defn collided-with-self? [{:keys [body]}]
+  "Returns true if snake collided with it's body, false otherwise."
+  (let [head          (last body)
+        headless-body (set (drop-last body))]
+    (contains? headless-body head)))
+
 (defn collided? [board {:keys [body] :as snake}]
   "Returns true if snake collided with board, false otherwise."
   (let [head                (last body)
         next-head-positions (map #(mapv + (second %1) head)
-                                 direction->offset)]
-    (some (partial out-of-bound? board) next-head-positions)))
+                                 direction->offset)
+        board-collision?    (some (partial out-of-bound? board)
+                                  next-head-positions)]
+    (or board-collision?
+        (collided-with-self? snake))))
 
 (defn tail-offset [{:keys [direction]}]
   "Returns the offset for the direction in which a snake

@@ -59,6 +59,9 @@
        (utils/collided? (:board db) new-snake)
        (assoc :dispatch [::stop-game])
 
+       (utils/collided-with-self? new-snake)
+       (assoc :dispatch [::stop-game])
+
        (utils/ate? new-snake food)
        (assoc :dispatch [::grow-snake])))))
 
